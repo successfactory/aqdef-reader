@@ -10,7 +10,7 @@ class QDasAttribute:
         return self.__data[key]
 
     def get_data_keys(self):
-        return self.__data.keys()
+        return list(self.__data.keys())
 
     def append_measurement(self, measurement):
         self.__measurements.append(measurement)
