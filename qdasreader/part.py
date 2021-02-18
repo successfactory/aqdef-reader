@@ -14,7 +14,7 @@ class QDasPart:
         return self.__data[key]
 
     def contains_attribute(self, index):
-        if len(self.__attributes) >= index: 
+        if len(self.__attributes) >= index:
             return True
         return False
 
