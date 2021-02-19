@@ -1,6 +1,7 @@
 from ..attribute import QDasAttribute
 import unittest
 
+
 class AttributeTestCase(unittest.TestCase):
     def setUp(self):
         self.attribute = QDasAttribute()

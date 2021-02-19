@@ -1,22 +1,20 @@
+"Setup script for the qdasreader package"
+
 import setuptools
+import qdasreader as app
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="qdasreader",
-    version="0.0.1",
-    author="successfactory consulting group",
-    author_email="office@successfactory.cc",
-    description="A reader for Q-DAS ASCII files into Python structures",
+    name=app.__project__,
+    version=app.__version__,
+    author=app.__author__,
+    author_email=app.__author_email__,
+    description=app.__doc__,
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/successfactory/qdas-reader",
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache Software License",
-        "Operating System :: OS Independent",
-    ],
+    url=app.__url__,
+    classifiers=app.__classifiers__,
     packages=setuptools.find_packages(),
     python_requires='>=3.6',
 )
