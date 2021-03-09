@@ -1,6 +1,17 @@
-class QDasMeasurement:
-    def __init__(self, value, attribute, date_time, event, batch_no, nest_no, controller_no, machine_no, process_parameter,
-                 control_no):
+class Measurement:
+    def __init__(
+        self,
+        value,
+        attribute,
+        date_time,
+        event,
+        batch_no,
+        nest_no,
+        controller_no,
+        machine_no,
+        process_parameter,
+        control_no,
+    ):
         self.value = value
         self.attribute = attribute
         self.datetime = date_time

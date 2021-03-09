@@ -1,4 +1,4 @@
-class QDasAttribute:
+class Characteristic:
     def __init__(self):
         self.__data = {}
         self.__measurements = []

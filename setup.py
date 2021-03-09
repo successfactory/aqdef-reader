@@ -1,7 +1,7 @@
-"Setup script for the qdasreader package"
+"Setup script for the aqdefreader package"
 
 import setuptools
-import qdasreader as app
+import aqdefreader as app
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
