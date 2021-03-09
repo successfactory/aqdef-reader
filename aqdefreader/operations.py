@@ -78,10 +78,10 @@ def create_column_dataframe(data, part_index=0) -> pd.DataFrame:
         name = characteristic.get_data("K2002")
 
         if name != "":
-            df = create_characteristic_dataframe(characteristic, True)
-            df.columns = [name]
+            temp_df = create_characteristic_dataframe(characteristic, True)
+            temp_df.columns = [name]
 
-            df = pd.concat([df, df], axis=1)
+            df = pd.concat([df, temp_df], axis=1)
 
     df = df.sort_index()
     return df
