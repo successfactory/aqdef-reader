@@ -1,4 +1,4 @@
-"A reader for Advanced Quality Data Exchange Format ASCII files into Python structures"
+"A module to read Advanced Quality Data Exchange Format files."
 
 from .part import Part
 from .characteristic import Characteristic
