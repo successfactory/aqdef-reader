@@ -17,3 +17,6 @@ class Characteristic:
 
     def get_measurements(self):
         return self.__measurements
+
+    def get_last_measurement(self):
+        return self.__measurements[-1]

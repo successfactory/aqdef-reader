@@ -1,16 +1,16 @@
 class Measurement:
     def __init__(
         self,
-        value,
-        attribute,
-        date_time,
-        event,
-        batch_no,
-        nest_no,
-        controller_no,
-        machine_no,
-        process_parameter,
-        control_no,
+        value,  # K0001
+        attribute=None,  # K0002
+        date_time=None,  # K0004
+        event=None,  # K0005
+        batch_no=None,  # K0006
+        nest_no=None,  # K0007
+        controller_no=None,  # K0008
+        machine_no=None,  # K0010
+        process_parameter=None,  # K0011
+        control_no=None,
     ):
         self.value = value
         self.attribute = attribute

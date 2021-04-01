@@ -27,5 +27,4 @@ class CharacteristicTestCase(unittest.TestCase):
         self.characteristic.append_measurement(4711)
         self.characteristic.append_measurement(4711)
         self.assertEqual(len(self.characteristic.get_measurements()), 3)
-        print(type(self.characteristic.get_measurements()))
         self.assertIsInstance(self.characteristic.get_measurements(), list)

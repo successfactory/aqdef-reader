@@ -2,6 +2,7 @@ from .part import Part
 from .characteristic import Characteristic
 from .measurement import Measurement
 from datetime import datetime
+import re
 
 
 class DfqFile:
@@ -31,16 +32,18 @@ class DfqFile:
 
     def __parse_data(self, line):
         code = line.split(" ", 1)[0]
-        value = line.split(" ", 1)[1]
+        value = self.__parse_numeric_value(line.split(" ", 1)[1])
 
         index = 1
+        has_id = False
         if len(code) > 5:
             code, index = code.split("/")
             index = int(index)
+            has_id = True
 
         # header - number of characteristics in file
         if code[0:5] == "K0100":
-            print("Count of characteristics in DFQ file: {}".format(value))
+            print(f"Count of characteristics in DFQ file: {value}")
         # part number
         elif code[0:5] == "K0101":
             self.__part_index += 1
@@ -49,8 +52,10 @@ class DfqFile:
         elif code[0:2] == "K1":
             if self.__part_index + 1 != index:
                 print(
-                    f"Warning: Given part index {index} not equal to current index {self.__part_index + 1}."
+                    f"Warning: Given part index {index} not equal to current index {self.__part_index + 1}"
                 )
+                self.__part_index += 1
+                self.parts.append(Part(value))
             self.parts[self.__part_index].set_data(code, value)
         # characteristic information
         elif code[0:2] in ("K2", "K3", "K8"):
@@ -60,12 +65,33 @@ class DfqFile:
                 )
                 if new_index + 1 != index:
                     print(
-                        f"Warning: Given characteristic index {index} not equal to current index {new_index + 1}."
+                        f"Warning: Given characteristic index {index} not equal to current index {new_index + 1}"
                     )
             attr = self.parts[self.__part_index].get_characteristic_by_index(index)
             attr.set_data(code, value)
+        # measurements
+        elif has_id:
+            self.__parse_data_measurement(code, index, value)
+
+    def __parse_data_measurement(self, code, index, value):
+        if code[0:5] in ("K0001"):
+            measure = Measurement(value)
+            self.parts[self.__part_index].get_characteristic_by_index(
+                index
+            ).append_measurement(measure)
+        elif code[0:5] in ("K0002"):
+            self.parts[self.__part_index].get_characteristic_by_index(
+                index
+            ).get_last_measurement().attribute = value
+        elif code[0:5] in ("K0004"):
+            self.parts[self.__part_index].get_characteristic_by_index(
+                index
+            ).get_last_measurement().datetime = datetime.strptime(
+                value, "%d.%m.%Y/%H:%M:%S"
+            )
 
     def __parse_measurements(self, line):
+        print(line)
         for i, data in enumerate(line.split("\x0f")):
             # documentation page 46 - scope of measurement info
             self.__characteristic = 0
@@ -114,3 +140,14 @@ class DfqFile:
             self.__process_parameter = elements[8]
         if len(elements) >= 10:
             self.__control_no = int(elements[9])
+
+    def __parse_numeric_value(self, value):
+        intnumber = re.compile(r"^\d+$")
+        decnumber = re.compile(r"^\d+(?:,\d*)?$")
+
+        if intnumber.match(value):
+            return int(value)
+        elif decnumber.match(value):
+            return float(value.replace(",", "."))
+
+        return value
