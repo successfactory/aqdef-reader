@@ -12,7 +12,11 @@ setuptools.setup(
     author=app.__author__,
     author_email=app.__author_email__,
     description=app.__doc__,
-    long_description=long_description,
+    long_description=("**aqdef-reader** is a Python module to read AQDEF (Q-DAS or qdas) ASCII files via Python. The package "
+                      "comes with data structures to cover the tranfer file format header elements such as parts (Teiletyp) "
+                      "and characteristics (Merkmale). As the ASCII files might already come with measured, values, the "
+                      "reader function can already read these values (Messwerte) and stores them as part of the "
+                      "characteristics described in the transfer file."),
     url=app.__url__,
     classifiers=app.__classifiers__,
     packages=setuptools.find_packages(),
