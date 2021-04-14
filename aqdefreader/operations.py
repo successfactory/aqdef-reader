@@ -41,7 +41,9 @@ def create_characteristic_dataframe(characteristic, grouped=False) -> pd.DataFra
     DataFrame
         New DataFrame with the measured values of the Characteristic.
     """
-    df = pd.DataFrame([m.as_dict() for m in characteristic.get_measurements()])
+    df = pd.DataFrame(
+        [m.as_value_dictionary() for m in characteristic.get_measurements()]
+    )
     df.columns = ["datetime", "value"]
 
     if grouped:
@@ -52,7 +54,7 @@ def create_characteristic_dataframe(characteristic, grouped=False) -> pd.DataFra
     return df
 
 
-def create_column_dataframe(data, part_index=0) -> pd.DataFrame:
+def create_column_dataframe(file_data, part_index=0) -> pd.DataFrame:
     """
     Converts a full part of the DFQ-File into a pandas DataFrame with
     all Characteristics as columns and measured values as rows. To
@@ -60,7 +62,7 @@ def create_column_dataframe(data, part_index=0) -> pd.DataFrame:
 
     Parameters
     ----------
-    data : Part
+    file_data : Part
         The full aqdef reader object with all data.
     part_index : int, default 0
         If the data containts more than one part, the part to be
@@ -72,16 +74,20 @@ def create_column_dataframe(data, part_index=0) -> pd.DataFrame:
     DataFrame
         New DataFrame with the measured values of all Characteristic.
     """
-    df = pd.DataFrame()
+    all_characteristics_df = pd.DataFrame()
 
-    for i, characteristic in enumerate(data.parts[part_index].get_characteristics()):
+    for i, characteristic in enumerate(file_data.parts[part_index].get_characteristics()):
         name = characteristic.get_data("K2002")
 
         if name != "":
-            temp_df = create_characteristic_dataframe(characteristic, True)
-            temp_df.columns = [name]
+            new_characteristic_df = create_characteristic_dataframe(
+                characteristic, True
+            )
+            new_characteristic_df.columns = [name]
 
-            df = pd.concat([df, temp_df], axis=1)
+            all_characteristics_df = pd.concat(
+                [all_characteristics_df, new_characteristic_df], axis=1
+            )
 
-    df = df.sort_index()
-    return df
+    all_characteristics_df = all_characteristics_df.sort_index()
+    return all_characteristics_df

@@ -23,5 +23,21 @@ class Measurement:
         self.process_parameter = process_parameter
         self.control_no = control_no
 
-    def as_dict(self):
+    def as_value_dictionary(self):
+        "Returns the measurement as dictionary. The entry is limited to the datetime and the value."
         return {"datetime": self.datetime, "value": self.value}
+
+    def as_dictionary(self):
+        "Returns the measurement as dictionary."
+        return {
+            "datetime": self.datetime,
+            "value": self.value,
+            "attribute": self.attribute,
+            "event": self.event,
+            "batch_no": self.batch_no,
+            "nest_no": self.nest_no,
+            "controller_no": self.controller_no,
+            "machine_no": self.machine_no,
+            "process_parameter": self.process_parameter,
+            "control_no": self.control_no,
+        }
