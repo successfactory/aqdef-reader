@@ -23,7 +23,7 @@ def read_dfq_file(filename):
     return DfqFile(lines)
 
 
-def create_characteristic_dataframe(characteristic, grouped=False) -> pd.DataFrame:
+def create_characteristic_dataframe(characteristic, unique=False) -> pd.DataFrame:
     """
     Converts a characteristic inlcuding measured values into a pandas DataFrame.
 
@@ -31,7 +31,7 @@ def create_characteristic_dataframe(characteristic, grouped=False) -> pd.DataFra
     ----------
     characteristic
         The corresponding Characteristic to be converted.
-    grouped : bool, default False
+    unique : bool, default False
         If grouped is set to True, all duplicates of the measured values by
         the index of the measure datetime will be grouped and the mean value
         will be calculated.
@@ -46,7 +46,7 @@ def create_characteristic_dataframe(characteristic, grouped=False) -> pd.DataFra
     )
     df.columns = ["datetime", "value"]
 
-    if grouped:
+    if unique:
         df = df.groupby("datetime").aggregate("mean").reset_index()
         df["datetime"] = pd.to_datetime(df["datetime"])
         df = df.set_index("datetime")
@@ -76,7 +76,9 @@ def create_column_dataframe(file_data, part_index=0) -> pd.DataFrame:
     """
     all_characteristics_df = pd.DataFrame()
 
-    for i, characteristic in enumerate(file_data.parts[part_index].get_characteristics()):
+    for i, characteristic in enumerate(
+        file_data.parts[part_index].get_characteristics()
+    ):
         name = characteristic.get_data("K2002")
 
         if name != "":
