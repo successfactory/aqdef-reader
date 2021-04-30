@@ -1,0 +1,33 @@
+{% set data = load_setup_py_data() %}
+
+package:
+  name: aqdefreader
+  version: {{ data['version'] }}
+
+source:
+  path:  {{ data['url'] }}
+
+build:
+  number: 0
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+  build:
+    - python
+    - pandas
+    - flake8
+    - pytest
+    - pytest-cov
+
+  run:
+    - python
+    - pandas
+
+test:
+  imports:
+    - aqdefreader
+
+about:
+  home: {{ data['url'] }}
+  license: {{ data['license'] }}
+summary: {{ data['description'] }}
