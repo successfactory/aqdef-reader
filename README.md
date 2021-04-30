@@ -15,11 +15,11 @@ The source code is currently hosted on GitHub at:
 https://github.com/successfactory/aqdef-reader
 
 Binary installers for the latest released version are available at the [Python
-Package Index (PyPI)](https://test.pypi.org/project/aqdefreader) and on [Conda](https://docs.conda.io/en/latest/).
+Package Index (PyPI)](https://test.pypi.org/project/aqdefreader).
 
 ```sh
-# or PyPI
-pip install -i https://test.pypi.org/simple/ aqdefreader
+# PyPI
+pip install aqdefreader
 ```
 
 ## Dependencies
