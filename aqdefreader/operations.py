@@ -17,8 +17,8 @@ def read_dfq_file(filename):
         A new DfqFile object which holds all data of the file
         in data strucutres which can be accessed.
     """
-    with open(filename) as f:
-        lines = f.read().splitlines()
+    with open(filename, "rb") as f:
+        lines = f.read().decode('iso8859-1', errors='replace').splitlines()
 
     return DfqFile(lines)
 
