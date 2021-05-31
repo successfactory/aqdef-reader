@@ -12,6 +12,7 @@ class DfqFile:
 
         self.__part_index = -1
 
+        self.__value = 0
         self.__characteristic = 0
         self.__datetime = datetime.now()
         self.__event = ""
@@ -21,8 +22,11 @@ class DfqFile:
         self.__machine_no = 0
         self.__process_parameter = ""
         self.__control_no = 0
+        self.__subgroup_size = 0
+        self.__error_count = 0
 
         self.__get_lines(lines)
+        print("something")
 
     def __get_lines(self, lines):
         for line in lines:
@@ -93,15 +97,33 @@ class DfqFile:
             self.__event = ""
             self.__process_parameter = ""
 
+            # Get the information if the characteristic is variable or
+            # attributed. If attributed, subgroup size is part of the
+            # data and needs to be extracted.
+            attributed = 0
+            if (
+                "K2004"
+                in self.parts[self.__part_index]
+                .get_characteristic_by_index(i + 1)
+                .get_data_keys()
+            ):
+                attributed = (
+                    self.parts[self.__part_index]
+                    .get_characteristic_by_index(i + 1)
+                    .get_data("K2004")
+                )
+
             elements = data.split("\x14")
-            value = float(elements[0])
+            self.__characteristic = 0
             if len(elements) >= 2:
                 self.__characteristic = int(elements[1])
+            if attributed == 1 and len(elements) >= 4:
+                self.__characteristic = int(elements[3])
 
             if self.__characteristic not in (255, 256):
-                self.__extract_measurement_info(elements)
+                self.__extract_measurement_info(attributed, elements)
                 measure = Measurement(
-                    value,
+                    self.__value,
                     self.__characteristic,
                     self.__datetime,
                     self.__event,
@@ -111,30 +133,42 @@ class DfqFile:
                     self.__machine_no,
                     self.__process_parameter,
                     self.__control_no,
+                    self.__subgroup_size,
+                    self.__error_count,
                 )
                 self.parts[self.__part_index].get_characteristic_by_index(
                     i + 1
                 ).append_measurement(measure)
 
-    def __extract_measurement_info(self, elements):
-        if len(elements) >= 2:
-            self.__characteristic = int(elements[1])
-        if len(elements) >= 3:
-            self.__datetime = datetime.strptime(elements[2], "%d.%m.%Y/%H:%M:%S")
-        if len(elements) >= 4:
-            self.__event = elements[3]
-        if len(elements) >= 5:
-            self.__batch_no = elements[4]
-        if len(elements) >= 6:
-            self.__nest_no = int(elements[5])
-        if len(elements) >= 7:
-            self.__controller_no = int(elements[6])
-        if len(elements) >= 8:
-            self.__machine_no = int(elements[7])
-        if len(elements) >= 9:
-            self.__process_parameter = elements[8]
-        if len(elements) >= 10:
-            self.__control_no = int(elements[9])
+    def __extract_measurement_info(self, attributed, elements):
+        offset = 0
+        if attributed == 1:
+            offset = 2
+            self.__subgroup_size = int(elements[0])
+            self.__error_count = int(elements[1])
+
+        if len(elements) >= 1 + offset:
+            self.__value = float(elements[0 + offset])
+        if len(elements) >= 2 + offset:
+            self.__characteristic = int(elements[1 + offset])
+        if len(elements) >= 3 + offset:
+            self.__datetime = datetime.strptime(
+                elements[2 + offset], "%d.%m.%Y/%H:%M:%S"
+            )
+        if len(elements) >= 4 + offset:
+            self.__event = elements[3 + offset]
+        if len(elements) >= 5 + offset:
+            self.__batch_no = elements[4 + offset]
+        if len(elements) >= 6 + offset:
+            self.__nest_no = int(elements[5 + offset])
+        if len(elements) >= 7 + offset:
+            self.__controller_no = int(elements[6 + offset])
+        if len(elements) >= 8 + offset:
+            self.__machine_no = int(elements[7 + offset])
+        if len(elements) >= 9 + offset:
+            self.__process_parameter = elements[8 + offset]
+        if len(elements) >= 10 + offset:
+            self.__control_no = int(elements[9 + offset])
 
     def __parse_numeric_value(self, value):
         intnumber = re.compile(r"^\d+$")

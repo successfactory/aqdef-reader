@@ -18,7 +18,7 @@ def read_dfq_file(filename):
         in data strucutres which can be accessed.
     """
     with open(filename, "rb") as f:
-        lines = f.read().decode('iso8859-1', errors='replace').splitlines()
+        lines = f.read().decode("iso8859-1", errors="replace").splitlines()
 
     return DfqFile(lines)
 
@@ -41,14 +41,18 @@ def create_characteristic_dataframe(characteristic, unique=False) -> pd.DataFram
     DataFrame
         New DataFrame with the measured values of the Characteristic.
     """
-    df = pd.DataFrame(
-        [m.as_value_dictionary() for m in characteristic.get_measurements()]
-    )
-    df.columns = ["datetime", "value"]
+    df = pd.DataFrame(columns=["datetime", "value"])
+
+    if len(characteristic.get_measurements()) > 0:
+        df = pd.DataFrame(
+            [m.as_value_dictionary() for m in characteristic.get_measurements()]
+        )
+        df.columns = ["datetime", "value"]
+        df["datetime"] = pd.to_datetime(df["datetime"])
+        if unique:
+            df = df.groupby("datetime").aggregate("mean").reset_index()
 
     if unique:
-        df = df.groupby("datetime").aggregate("mean").reset_index()
-        df["datetime"] = pd.to_datetime(df["datetime"])
         df = df.set_index("datetime")
 
     return df

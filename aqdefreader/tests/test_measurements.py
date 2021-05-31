@@ -47,6 +47,26 @@ class MeasurementTestCase(unittest.TestCase):
         )
         self.assertDictEqual(m.as_value_dictionary(), {"datetime": d, "value": 123})
 
+    def test_subgroup_dictionary(self):
+        m = Measurement(subgroup_size=1000, error_count=1)
+        self.assertDictEqual(
+            m.as_dictionary(),
+            {
+                "datetime": None,
+                "value": None,
+                "attribute": None,
+                "event": None,
+                "batch_no": None,
+                "nest_no": None,
+                "controller_no": None,
+                "machine_no": None,
+                "process_parameter": None,
+                "control_no": None,
+                "subgroup_size": 1000,
+                "error_count": 1
+            },
+        )
+
     def test_full_dictionary(self):
         d = datetime.now()
         m = Measurement(
@@ -65,6 +85,8 @@ class MeasurementTestCase(unittest.TestCase):
                 "machine_no": "machno",
                 "process_parameter": "no-param",
                 "control_no": "ok",
+                "subgroup_size": None,
+                "error_count": None
             },
         )
 
@@ -84,5 +106,7 @@ class MeasurementTestCase(unittest.TestCase):
                 "machine_no": None,
                 "process_parameter": None,
                 "control_no": None,
+                "subgroup_size": None,
+                "error_count": None
             },
         )

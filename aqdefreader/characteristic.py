@@ -7,7 +7,8 @@ class Characteristic:
         self.__data[key] = data
 
     def get_data(self, key):
-        return self.__data[key]
+        if key in self.__data.keys():
+            return self.__data[key]
 
     def get_data_keys(self):
         return list(self.__data.keys())
