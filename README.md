@@ -15,7 +15,7 @@ The source code is currently hosted on GitHub at:
 https://github.com/successfactory/aqdef-reader
 
 Binary installers for the latest released version are available at the [Python
-Package Index (PyPI)](https://test.pypi.org/project/aqdefreader).
+Package Index (PyPI)](https://pypi.org/project/aqdefreader/).
 
 ```sh
 # PyPI
