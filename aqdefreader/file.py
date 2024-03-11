@@ -26,7 +26,6 @@ class DfqFile:
         self.__error_count = 0
 
         self.__get_lines(lines)
-        print("something")
 
     def __get_lines(self, lines):
         for line in lines:
@@ -46,8 +45,11 @@ class DfqFile:
             index = int(index)
             has_id = True
 
+        # characterictics for all characteristics
+        if index == 0:
+            pass
         # header - number of characteristics in file
-        if code[0:5] == "K0100":
+        elif code[0:5] == "K0100":
             print(f"Count of characteristics in DFQ file: {value}")
         # part information
         elif code[0:2] == "K1":
@@ -115,7 +117,7 @@ class DfqFile:
 
             elements = data.split("\x14")
             self.__characteristic = 0
-            if len(elements) >= 2:
+            if len(elements) >= 2 and str(elements[1]).strip():
                 self.__characteristic = int(elements[1])
             if attributed == 1 and len(elements) >= 4:
                 self.__characteristic = int(elements[3])
@@ -149,9 +151,9 @@ class DfqFile:
 
         if len(elements) >= 1 + offset:
             self.__value = float(elements[0 + offset])
-        if len(elements) >= 2 + offset:
+        if len(elements) >= 2 + offset and str(elements[1 + offset]).strip():
             self.__characteristic = int(elements[1 + offset])
-        if len(elements) >= 3 + offset:
+        if len(elements) >= 3 + offset and str(elements[2 + offset]).strip():
             self.__datetime = datetime.strptime(
                 elements[2 + offset], "%d.%m.%Y/%H:%M:%S"
             )

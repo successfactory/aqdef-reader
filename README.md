@@ -8,7 +8,7 @@ parts (Teiletyp) and characteristics (Merkmale). As the ASCII files might alread
 them as part of the characteristics described in the transfer file.
 
 The package `aqdefreader` is based on the official 
-[Q-DAS ASCII transfer format manual](https://www.q-das.com/fileadmin/mediamanager/Datenformat_Dokumente/Q-DAS_ASCII-Transfer-Format_ENG_V12_ec.pdf) tranfer format released by Q-DAS GmbH.
+[Q-DAS ASCII transfer format manual](https://training.q-das.de/fileadmin/mediamanager/Datenformat_Dokumente/Q-DAS_ASCII-Transfer-Format_ENG_V12_ec.pdf) tranfer format released by Q-DAS GmbH.
 
 ## Installation
 The source code is currently hosted on GitHub at:
