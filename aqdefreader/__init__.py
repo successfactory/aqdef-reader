@@ -1,4 +1,4 @@
-"A module to read Advanced Quality Data Exchange Format files."
+"A module to read DFQ files in the Q-DAS ASCII transfer format."
 
 from .part import Part
 from .characteristic import Characteristic
