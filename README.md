@@ -1,4 +1,4 @@
-# Python module to read Advanced Quality Data Exchange Format (AQDEF) files
+# Python module to read DFQ files in the Q-DAS ASCII transfer format
 [![PyPI Latest Release](https://img.shields.io/pypi/v/aqdefreader)](https://pypi.org/project/aqdefreader/)
 [![Python Package](https://github.com/successfactory/aqdef-reader/actions/workflows/main.yml/badge.svg)](https://github.com/successfactory/aqdef-reader/actions/workflows/main.yml)
 [![CodeQL](https://github.com/successfactory/aqdef-reader/actions/workflows/codeql.yml/badge.svg)](https://github.com/successfactory/aqdef-reader/actions/workflows/codeql.yml)
