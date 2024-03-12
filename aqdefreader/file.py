@@ -8,8 +8,7 @@ import re  # regular expression library to parse numbers
 
 class DfqFile:
     def __init__(self, lines):
-        self.parts = []
-
+        self.__parts = []
         self.__part_index = -1
 
         self.__value = 0
@@ -27,6 +26,15 @@ class DfqFile:
 
         self.__get_lines(lines)
 
+    def get_part(self, index):
+        return self.__parts[index]
+
+    def get_parts(self):
+        return self.__parts
+
+    def part_count(self):
+        return len(self.__parts)
+
     def __get_lines(self, lines):
         for line in lines:
             if line[0:1] == "K":
@@ -36,7 +44,7 @@ class DfqFile:
 
     def __parse_coded_line(self, line):
         code = line.split(" ", 1)[0]
-        value = self.__parse_numeric_value(line.split(" ", 1)[1])
+        value = DfqFile.__parse_numeric_value(line.split(" ", 1)[1])
 
         index = 1
         has_id = False
@@ -56,20 +64,20 @@ class DfqFile:
             # create a new part if the index increased
             if self.__part_index + 1 < index:
                 self.__part_index += 1
-                self.parts.append(Part(value))
+                self.__parts.append(Part(value))
 
-            self.parts[self.__part_index].set_data(code, value)
+            self.__parts[self.__part_index].set_data(code, value)
         # characteristic information
         elif code[0:2] in ("K2", "K3", "K8"):
-            if not self.parts[self.__part_index].contains_characteristic(index):
-                new_index = self.parts[self.__part_index].append_characteristic(
+            if not self.__parts[self.__part_index].contains_characteristic(index):
+                new_index = self.__parts[self.__part_index]._append_characteristic(
                     Characteristic()
                 )
                 if new_index + 1 != index:
                     print(
                         f"Warning: Given characteristic index {index} not equal to current index {new_index + 1}"
                     )
-            attr = self.parts[self.__part_index].get_characteristic_by_index(index)
+            attr = self.__parts[self.__part_index].get_characteristic_by_index(index)
             attr.set_data(code, value)
         # measurements
         elif has_id:
@@ -78,15 +86,15 @@ class DfqFile:
     def __parse_coded_measurement(self, code, index, value):
         if code[0:5] in ("K0001"):
             measure = Measurement(value)
-            self.parts[self.__part_index].get_characteristic_by_index(
+            self.__parts[self.__part_index].get_characteristic_by_index(
                 index
-            ).append_measurement(measure)
+            )._append_measurement(measure)
         elif code[0:5] in ("K0002"):
-            self.parts[self.__part_index].get_characteristic_by_index(
+            self.__parts[self.__part_index].get_characteristic_by_index(
                 index
             ).get_last_measurement().attribute = value
         elif code[0:5] in ("K0004"):
-            self.parts[self.__part_index].get_characteristic_by_index(
+            self.__parts[self.__part_index].get_characteristic_by_index(
                 index
             ).get_last_measurement().datetime = datetime.strptime(
                 value, "%d.%m.%Y/%H:%M:%S"
@@ -105,12 +113,12 @@ class DfqFile:
             attributed = 0
             if (
                 "K2004"
-                in self.parts[self.__part_index]
+                in self.__parts[self.__part_index]
                 .get_characteristic_by_index(i + 1)
                 .get_data_keys()
             ):
                 attributed = (
-                    self.parts[self.__part_index]
+                    self.__parts[self.__part_index]
                     .get_characteristic_by_index(i + 1)
                     .get_data("K2004")
                 )
@@ -138,9 +146,9 @@ class DfqFile:
                     self.__subgroup_size,
                     self.__error_count,
                 )
-                self.parts[self.__part_index].get_characteristic_by_index(
+                self.__parts[self.__part_index].get_characteristic_by_index(
                     i + 1
-                ).append_measurement(measure)
+                )._append_measurement(measure)
 
     def __extract_measurement_info(self, attributed, elements):
         offset = 0
@@ -172,7 +180,8 @@ class DfqFile:
         if len(elements) >= 10 + offset:
             self.__control_no = int(elements[9 + offset])
 
-    def __parse_numeric_value(self, value):
+    @staticmethod
+    def __parse_numeric_value(value):
         intnumber = re.compile(r"^\d+$")
         decnumber = re.compile(r"^\d+(?:,\d*)?$")
 

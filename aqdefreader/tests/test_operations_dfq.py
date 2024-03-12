@@ -9,15 +9,15 @@ class DfqFileIntegrationTestCase(unittest.TestCase):
 
     def test_file_read(self):
         parsed_file = read_dfq_file(self.__FILENAME)
-        self.assertEqual(len(parsed_file.parts), 1)
+        self.assertEqual(parsed_file.part_count(), 1)
 
     def test_file_read_characteristics(self):
         parsed_file = read_dfq_file(self.__FILENAME)
-        self.assertEqual(len(parsed_file.parts[0].get_characteristics()), 2)
+        self.assertEqual(len(parsed_file.get_part(0).get_characteristics()), 2)
 
     def test_file_read_part_name(self):
         parsed_file = read_dfq_file(self.__FILENAME)
-        self.assertEqual(parsed_file.parts[0].get_data("K1001"), "Teil 123.456.789")
+        self.assertEqual(parsed_file.get_part(0).get_data("K1001"), "Teil 123.456.789")
 
     def test_file_df_count(self):
         data = {

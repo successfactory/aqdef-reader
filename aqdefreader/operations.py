@@ -58,7 +58,9 @@ def create_characteristic_dataframe(characteristic, unique=False) -> pd.DataFram
     return df
 
 
-def create_column_dataframe(file_data, part_index=0) -> pd.DataFrame:
+def create_column_dataframe(
+    file_data: DfqFile, part_index=0, group_by_date=True
+) -> pd.DataFrame:
     """
     Converts a full part of the DFQ-File into a pandas DataFrame with
     all Characteristics as columns and measured values as rows. To
@@ -72,6 +74,13 @@ def create_column_dataframe(file_data, part_index=0) -> pd.DataFrame:
         If the data containts more than one part, the part to be
         used for the conversion can be specified. If only one part
         is available, the default index 0 is fine.
+    group_by_date : bool, default True
+        If group_by_date is set to True, all duplicates of the measured values by
+        the index of the measure datetime will be grouped and the mean value
+        will be calculated. Set to False if the measuers do not have
+        any timestamp (datetime) as otherwise only one result will
+        be returned.
+
 
     Returns
     -------
@@ -81,14 +90,19 @@ def create_column_dataframe(file_data, part_index=0) -> pd.DataFrame:
     all_characteristics_df = pd.DataFrame()
 
     for i, characteristic in enumerate(
-        file_data.parts[part_index].get_characteristics()
+        file_data.get_part(part_index).get_characteristics()
     ):
         name = characteristic.get_data("K2002")
 
         if name != "":
             new_characteristic_df = create_characteristic_dataframe(
-                characteristic, True
+                characteristic, group_by_date
             )
+
+            if not group_by_date:
+                new_characteristic_df = new_characteristic_df["value"]
+                new_characteristic_df.rename(name, inplace=True)
+
             new_characteristic_df.columns = [name]
 
             all_characteristics_df = pd.concat(

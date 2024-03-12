@@ -23,8 +23,8 @@ class CharacteristicTestCase(unittest.TestCase):
         self.assertEqual(self.characteristic.get_data("key"), 4711)
 
     def test_get_measurement(self):
-        self.characteristic.append_measurement(4711)
-        self.characteristic.append_measurement(4711)
-        self.characteristic.append_measurement(4711)
+        self.characteristic._append_measurement(4711)
+        self.characteristic._append_measurement(4711)
+        self.characteristic._append_measurement(4711)
         self.assertEqual(len(self.characteristic.get_measurements()), 3)
         self.assertIsInstance(self.characteristic.get_measurements(), list)
