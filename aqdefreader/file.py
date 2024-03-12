@@ -112,7 +112,8 @@ class DfqFile:
             # data and needs to be extracted.
             attributed = 0
             if (
-                "K2004"
+                self.__parts[self.__part_index].contains_characteristic(i + 1)
+                and "K2004"
                 in self.__parts[self.__part_index]
                 .get_characteristic_by_index(i + 1)
                 .get_data_keys()
