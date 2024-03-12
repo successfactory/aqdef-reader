@@ -10,9 +10,9 @@ class PartTestCase(unittest.TestCase):
         self.part.set_data("abc12345", 1)
         self.part.set_data(2, "abc12345")
 
-        self.part.append_characteristic(4711)
-        self.part.append_characteristic(4711)
-        self.part.append_characteristic(4711)
+        self.part._append_characteristic(4711)
+        self.part._append_characteristic(4711)
+        self.part._append_characteristic(4711)
 
     def test_part_init_part_no(self):
         self.assertTrue(self.part.get_part_no() == "a testpart")

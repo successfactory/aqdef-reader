@@ -18,12 +18,13 @@ class Part:
             return True
         return False
 
-    def append_characteristic(self, characteristic):
+    def _append_characteristic(self, characteristic):
         self.__characteristic.append(characteristic)
         return len(self.__characteristic) - 1
 
     def get_characteristic_by_index(self, index):
-        return self.__characteristic[index - 1]
+        if self.contains_characteristic(index):
+            return self.__characteristic[index - 1]
 
     def get_characteristics(self):
         return self.__characteristic

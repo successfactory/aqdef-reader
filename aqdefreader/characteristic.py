@@ -13,7 +13,7 @@ class Characteristic:
     def get_data_keys(self):
         return list(self.__data.keys())
 
-    def append_measurement(self, measurement):
+    def _append_measurement(self, measurement):
         self.__measurements.append(measurement)
 
     def get_measurements(self):
