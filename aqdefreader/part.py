@@ -1,3 +1,6 @@
+from .characteristic import Characteristic
+
+
 class Part:
     def __init__(self, part_no):
         self.__part_no = part_no
@@ -23,8 +26,9 @@ class Part:
         return len(self.__characteristic) - 1
 
     def get_characteristic_by_index(self, index):
-        if self.contains_characteristic(index):
-            return self.__characteristic[index - 1]
+        if not self.contains_characteristic(index):
+            self._append_characteristic(Characteristic())
+        return self.__characteristic[index - 1]
 
     def get_characteristics(self):
         return self.__characteristic
