@@ -1,5 +1,6 @@
 from .file import DfqFile
 import pandas as pd
+from chardet.universaldetector import UniversalDetector
 
 
 def read_dfq_file(filename):
@@ -17,8 +18,17 @@ def read_dfq_file(filename):
         A new DfqFile object which holds all data of the file
         in data strucutres which can be accessed.
     """
+    detector = UniversalDetector()
+    for line in open(filename, "rb"):
+        detector.feed(line)
+        if detector.done:
+            break
+    detector.close()
+    encoding = (detector.result.get("encoding", "iso8859-1")).lower()
+    print(f"Detected file encoding: {encoding}")
+
     with open(filename, "rb") as f:
-        lines = f.read().decode("iso8859-1", errors="replace").splitlines()
+        lines = f.read().decode(encoding=encoding, errors="replace").splitlines()
 
     return DfqFile(lines)
 
