@@ -3,6 +3,7 @@ from .characteristic import Characteristic
 from .measurement import Measurement
 
 from datetime import datetime
+import dateutil.parser
 import re  # regular expression library to parse numbers
 
 
@@ -35,12 +36,20 @@ class DfqFile:
     def part_count(self):
         return len(self.__parts)
 
+    def __parse_datatime(self, value):
+        try:
+            return dateutil.parser.parse(value)
+        except ValueError:
+            print(f"Warning: {value} cannot be parsed as datetime")
+            return None
+
     def __get_lines(self, lines):
         for line in lines:
-            if line[0:1] == "K":
-                self.__parse_coded_line(line)
-            else:
-                self.__parse_uncoded_measurements(line)
+            if line:
+                if line[0:1] == "K":
+                    self.__parse_coded_line(line)
+                else:
+                    self.__parse_uncoded_measurements(line)
 
     def __parse_coded_line(self, line):
         code = line.split(" ", 1)[0]
@@ -96,8 +105,8 @@ class DfqFile:
         elif code[0:5] in ("K0004"):
             self.__parts[self.__part_index].get_characteristic_by_index(
                 index
-            ).get_last_measurement().datetime = datetime.strptime(
-                value, "%d.%m.%Y/%H:%M:%S"
+            ).get_last_measurement().datetime = self.__parse_datatime(
+                value
             )
 
     def __parse_uncoded_measurements(self, line):
@@ -163,9 +172,8 @@ class DfqFile:
         if len(elements) >= 2 + offset and str(elements[1 + offset]).strip():
             self.__characteristic = int(elements[1 + offset])
         if len(elements) >= 3 + offset and str(elements[2 + offset]).strip():
-            self.__datetime = datetime.strptime(
-                elements[2 + offset], "%d.%m.%Y/%H:%M:%S"
-            )
+            datetimeValue = self.__parse_datatime(elements[2 + offset])
+            self.__datetime = datetimeValue if datetimeValue else self.__datetime
         if len(elements) >= 4 + offset:
             self.__event = elements[3 + offset]
         if len(elements) >= 5 + offset:

@@ -1,5 +1,6 @@
 from ..operations import read_dfq_file, create_characteristic_dataframe
 from .testdata import TEST_DFQ_LINES
+import pandas as pd
 import unittest
 import os
 
@@ -65,4 +66,6 @@ class IntegrationTestCase(unittest.TestCase):
         df = create_characteristic_dataframe(
             parsed_file.get_part(0).get_characteristics()[0], True
         )
-        self.assertEqual(df.value["1999-08-12 15:25:02"], 10.04)
+        dt = pd.to_datetime("1999-12-08 15:25:02")
+        test_value = df.iloc[df.index.get_indexer([dt], method='nearest')[0]]
+        self.assertEqual(test_value.item(), 10.04)
