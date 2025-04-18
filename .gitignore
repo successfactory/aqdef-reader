@@ -131,3 +131,5 @@ dmypy.json
 # Visual Studio Code
 .vscode/
 junit/
+
+aqdefreader/tests/Sample*
