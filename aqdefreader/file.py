@@ -1,5 +1,4 @@
 from .part import Part
-from .characteristic import Characteristic
 from .measurement import Measurement
 
 from datetime import datetime
@@ -52,8 +51,9 @@ class DfqFile:
                     self.__parse_uncoded_measurements(line)
 
     def __parse_coded_line(self, line):
-        code = line.split(" ", 1)[0]
-        value = DfqFile.__parse_numeric_value(line.split(" ", 1)[1])
+        line_elements = line.split(" ", 1)
+        code = line_elements[0]
+        value = DfqFile.__parse_numeric_value(line.split(" ", 1)[1]) if len(line_elements) > 1 else None
 
         index = 1
         has_id = False
@@ -63,8 +63,8 @@ class DfqFile:
             has_id = True
 
         # characterictics for all characteristics
-        if index == 0:
-            pass
+        if value is None:
+            print(f"Warning: code {code} for index {index} has no value")
         # header - number of characteristics in file
         elif code[0:5] == "K0100":
             print(f"Count of characteristics in DFQ file: {value}")
@@ -78,14 +78,6 @@ class DfqFile:
             self.__parts[self.__part_index].set_data(code, value)
         # characteristic information
         elif code[0:2] in ("K2", "K3", "K8"):
-            if not self.__parts[self.__part_index].contains_characteristic(index):
-                new_index = self.__parts[self.__part_index]._append_characteristic(
-                    Characteristic()
-                )
-                if new_index + 1 != index:
-                    print(
-                        f"Warning: Given characteristic index {index} not equal to current index {new_index + 1}"
-                    )
             attr = self.__parts[self.__part_index].get_characteristic_by_index(index)
             attr.set_data(code, value)
         # measurements
